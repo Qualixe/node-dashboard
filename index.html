@@ -709,51 +709,65 @@
             <h1 class="text-2xl font-bold tracking-tight text-white">Orders Management</h1>
             <p class="text-xs text-slate-400">Monitor status, process shipping, and issue refunds.</p>
           </div>
-          <div class="flex items-center gap-2">
-            <button onclick="triggerBulkShip()" id="bulkShipBtn" class="hidden h-9 items-center gap-1.5 rounded-lg border border-blue-500/40 bg-blue-500/10 px-3 text-xs font-semibold text-blue-400 hover:bg-blue-500/20">
-              Mark Selected Shipped
-            </button>
-          </div>
         </div>
 
         <!-- Orders Table Card -->
         <div class="glass-card rounded-xl overflow-hidden">
           
-          <!-- Filters Toolbar -->
-          <div class="flex flex-col gap-3 border-b border-slate-800 p-4 sm:flex-row sm:items-center sm:justify-between">
-            
-            <!-- Status Pill Filter -->
-            <div class="flex flex-wrap items-center gap-1 rounded-lg bg-slate-900 p-1 border border-slate-800 text-xs">
+          <!-- Toolbar: actions + filters -->
+          <div class="flex flex-col gap-3 border-b border-slate-800 p-4">
+            <!-- Top row: action buttons + search -->
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <div class="flex items-center gap-2 flex-wrap">
+                <button onclick="copyOrdersToClipboard()" class="inline-flex items-center gap-1.5 rounded-md border border-slate-700 bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:bg-slate-700 hover:text-white transition">
+                  <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                  Copy
+                </button>
+                <button onclick="exportOrdersCSV()" class="inline-flex items-center gap-1.5 rounded-md border border-slate-700 bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:bg-slate-700 hover:text-white transition">
+                  <svg class="h-3.5 w-3.5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                  CSV
+                </button>
+                <button onclick="exportOrdersExcel()" class="inline-flex items-center gap-1.5 rounded-md border border-slate-700 bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:bg-slate-700 hover:text-white transition">
+                  <svg class="h-3.5 w-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M3 6h18M3 14h18M3 18h18"/></svg>
+                  Excel
+                </button>
+                <button onclick="window.print()" class="inline-flex items-center gap-1.5 rounded-md border border-slate-700 bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:bg-slate-700 hover:text-white transition">
+                  <svg class="h-3.5 w-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                  Print
+                </button>
+                <button onclick="triggerBulkShip()" id="bulkShipBtn" class="hidden items-center gap-1.5 rounded-md border border-blue-500/40 bg-blue-500/10 px-3 py-1.5 text-xs font-semibold text-blue-400 hover:bg-blue-500/20 transition">
+                  Mark Selected Shipped
+                </button>
+              </div>
+              <!-- Search -->
+              <div class="relative w-full sm:w-56">
+                <svg class="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                <input id="ordersSearchInput" oninput="renderOrdersTable()" type="text" placeholder="Search..." class="h-8 w-full rounded-lg border border-slate-800 bg-slate-900 pl-8 pr-3 text-xs text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none"/>
+              </div>
+            </div>
+            <!-- Bottom row: status pills -->
+            <div class="flex flex-wrap items-center gap-1 rounded-lg bg-slate-900 p-1 border border-slate-800 text-xs w-fit">
               <button onclick="filterOrdersByStatus('all')" class="order-status-pill active rounded px-3 py-1 font-medium text-white bg-slate-800">All</button>
               <button onclick="filterOrdersByStatus('Paid')" class="order-status-pill rounded px-3 py-1 font-medium text-slate-400 hover:text-white">Paid</button>
               <button onclick="filterOrdersByStatus('Shipped')" class="order-status-pill rounded px-3 py-1 font-medium text-slate-400 hover:text-white">Shipped</button>
               <button onclick="filterOrdersByStatus('Pending')" class="order-status-pill rounded px-3 py-1 font-medium text-slate-400 hover:text-white">Pending</button>
               <button onclick="filterOrdersByStatus('Cancelled')" class="order-status-pill rounded px-3 py-1 font-medium text-slate-400 hover:text-white">Cancelled</button>
             </div>
-
-            <!-- Search input -->
-            <div class="relative w-full sm:w-64">
-              <svg class="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-              <input id="ordersSearchInput" oninput="renderOrdersTable()" type="text" placeholder="Search order # or customer..." class="h-8 w-full rounded-lg border border-slate-800 bg-slate-900 pl-8 pr-3 text-xs text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none"/>
-            </div>
-
           </div>
 
           <!-- Orders Table -->
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs">
-              <thead class="bg-slate-900/80 border-b border-slate-800 uppercase text-slate-400 font-mono">
+              <thead class="bg-slate-800/80 border-b border-slate-700 uppercase text-slate-300 text-[11px] font-bold tracking-wide">
                 <tr>
-                  <th class="p-4 w-10 text-center">
+                  <th class="p-3 w-10 text-center">
                     <input type="checkbox" id="selectAllOrders" onclick="toggleSelectAllOrders(this)" class="rounded border-slate-700 bg-slate-900 text-blue-600 focus:ring-0">
                   </th>
-                  <th class="py-3 px-4">Order ID</th>
-                  <th class="py-3 px-4">Customer</th>
-                  <th class="py-3 px-4 hidden md:table-cell">Product</th>
-                  <th class="py-3 px-4">Date</th>
-                  <th class="py-3 px-4">Status</th>
-                  <th class="py-3 px-4 text-right">Total</th>
-                  <th class="py-3 px-4 text-center">Action</th>
+                  <th class="py-3 px-4 min-w-[200px]">Customer Info</th>
+                  <th class="py-3 px-4 min-w-[220px]">Product Price &amp; Name</th>
+                  <th class="py-3 px-4 min-w-[170px]">Status</th>
+                  <th class="py-3 px-4 min-w-[150px]">Fraud Check</th>
+                  <th class="py-3 px-4 min-w-[180px]">Order &amp; Note</th>
                 </tr>
               </thead>
               <tbody id="ordersTableBody" class="divide-y divide-slate-800/50">
@@ -1400,16 +1414,16 @@
     ];
 
     const seedOrders = [
-      { id: 1042, customer: 'Olivia Carter', email: 'olivia.carter@mail.com', product: 'Air Max 270 Runner', qty: 1, price: 149.99, date: '2026-11-04', status: 'Paid' },
-      { id: 1041, customer: 'Liam Nguyen', email: 'liam.n@mail.com', product: 'Tech Running Tee', qty: 3, price: 34.00, date: '2026-11-04', status: 'Pending' },
-      { id: 1040, customer: 'Sophia Patel', email: 'sophia.p@mail.com', product: 'Chrono Steel 42mm', qty: 1, price: 289.00, date: '2026-11-03', status: 'Shipped' },
-      { id: 1039, customer: 'Noah Kim', email: 'noah.kim@mail.com', product: 'Urban Commuter Backpack', qty: 1, price: 119.00, date: '2026-11-03', status: 'Paid' },
-      { id: 1038, customer: 'Emma Rossi', email: 'emma.rossi@mail.com', product: 'Essential Fleece Hoodie', qty: 1, price: 64.50, date: '2026-11-02', status: 'Shipped' },
-      { id: 1037, customer: 'James Okafor', email: 'j.okafor@mail.com', product: 'Court Classic Low', qty: 2, price: 89.00, date: '2026-11-02', status: 'Cancelled' },
-      { id: 1036, customer: 'Sophia Patel', email: 'sophia.p@mail.com', product: 'Weekender Duffel', qty: 1, price: 159.00, date: '2026-11-01', status: 'Shipped' },
-      { id: 1035, customer: 'Olivia Carter', email: 'olivia.carter@mail.com', product: 'Tech Running Tee', qty: 2, price: 34.00, date: '2026-10-31', status: 'Paid' },
-      { id: 1034, customer: 'James Okafor', email: 'j.okafor@mail.com', product: 'Air Max 270 Runner', qty: 1, price: 149.99, date: '2026-10-30', status: 'Pending' },
-      { id: 1033, customer: 'Liam Nguyen', email: 'liam.n@mail.com', product: 'Chrono Steel 42mm', qty: 1, price: 289.00, date: '2026-10-29', status: 'Shipped' },
+      { id: 1042, customer: 'Olivia Carter',  email: 'olivia.carter@mail.com',  phone: '01647575170', ip: '103.151.203.42', cn: 'CN-763482810', product: 'Air Max 270 Runner',         qty: 1, price: 149.99, date: '2026-11-04 01:38 PM', status: 'Paid',      fraudScore: 83, assignedTo: 'admin@acme.com', shipping: 'SteadFast', note: '' },
+      { id: 1041, customer: 'Liam Nguyen',    email: 'liam.n@mail.com',         phone: '01721404103', ip: '202.40.183.43',  cn: 'CN-836280',     product: 'Tech Running Tee',            qty: 3, price:  34.00, date: '2026-11-04 01:36 PM', status: 'Pending',   fraudScore: 68, assignedTo: 'admin@acme.com', shipping: 'SteadFast', note: '' },
+      { id: 1040, customer: 'Sophia Patel',   email: 'sophia.p@mail.com',       phone: '01553756969', ip: '202.125.67.248', cn: 'CN-836280',     product: 'Chrono Steel 42mm',           qty: 1, price: 289.00, date: '2026-11-03 01:23 PM', status: 'Cancelled', fraudScore: 85, assignedTo: 'admin@acme.com', shipping: 'SteadFast', note: 'Customer confirmed, kaj hobe ki na' },
+      { id: 1039, customer: 'Firoj Hossain',  email: 'firoj@mail.com',          phone: '01305113000', ip: '37.111.230.48',  cn: 'CN-836245450',  product: 'Urban Commuter Backpack',    qty: 1, price: 119.00, date: '2026-11-03 12:00 PM', status: 'Paid',      fraudScore: 100,assignedTo: 'admin@acme.com', shipping: 'SteadFast', note: '' },
+      { id: 1038, customer: 'Emma Rossi',     email: 'emma.rossi@mail.com',     phone: '01812345678', ip: '45.120.198.11',  cn: 'CN-112934501',  product: 'Essential Fleece Hoodie',    qty: 2, price:  64.50, date: '2026-11-02 10:15 AM', status: 'Shipped',   fraudScore: 91, assignedTo: 'admin@acme.com', shipping: 'Pathao',    note: '' },
+      { id: 1037, customer: 'James Okafor',   email: 'j.okafor@mail.com',       phone: '01923456789', ip: '103.99.144.22',  cn: 'CN-229870034',  product: 'Court Classic Low',          qty: 2, price:  89.00, date: '2026-11-02 09:00 AM', status: 'Cancelled', fraudScore: 42, assignedTo: 'admin@acme.com', shipping: 'SteadFast', note: 'Wrong address given' },
+      { id: 1036, customer: 'Sophia Patel',   email: 'sophia.p@mail.com',       phone: '01553756969', ip: '202.125.67.248', cn: 'CN-774512398',  product: 'Weekender Duffel',            qty: 1, price: 159.00, date: '2026-11-01 04:45 PM', status: 'Shipped',   fraudScore: 77, assignedTo: 'admin@acme.com', shipping: 'SteadFast', note: '' },
+      { id: 1035, customer: 'Olivia Carter',  email: 'olivia.carter@mail.com',  phone: '01647575170', ip: '103.151.203.42', cn: 'CN-881204776',  product: 'Tech Running Tee',            qty: 2, price:  34.00, date: '2026-10-31 11:20 AM', status: 'Paid',      fraudScore: 88, assignedTo: 'admin@acme.com', shipping: 'Pathao',    note: '' },
+      { id: 1034, customer: 'James Okafor',   email: 'j.okafor@mail.com',       phone: '01923456789', ip: '103.99.144.22',  cn: 'CN-990238401',  product: 'Air Max 270 Runner',         qty: 1, price: 149.99, date: '2026-10-30 08:30 AM', status: 'Pending',   fraudScore: 55, assignedTo: 'admin@acme.com', shipping: 'SteadFast', note: '' },
+      { id: 1033, customer: 'Liam Nguyen',    email: 'liam.n@mail.com',         phone: '01721404103', ip: '202.40.183.43',  cn: 'CN-662019843',  product: 'Chrono Steel 42mm',           qty: 1, price: 289.00, date: '2026-10-29 03:55 PM', status: 'Shipped',   fraudScore: 95, assignedTo: 'admin@acme.com', shipping: 'SteadFast', note: '' },
     ];
 
     let notifications = [
@@ -1701,18 +1715,97 @@
 
     function renderOrdersTable() {
       const list = getFilteredOrders();
+      const fraudColor = (s) => s >= 80 ? 'text-emerald-400 border-emerald-500/40 bg-emerald-500/10' : s >= 50 ? 'text-amber-400 border-amber-500/40 bg-amber-500/10' : 'text-rose-400 border-rose-500/40 bg-rose-500/10';
+      const rowBg = (s) => s === 'Cancelled' ? 'bg-rose-500/5' : s === 'Shipped' ? 'bg-emerald-500/5' : '';
       $('ordersTableBody').innerHTML = list.length ? list.map((o) => `
-        <tr class="hover:bg-slate-900/40">
-          <td class="p-4 text-center"><input type="checkbox" ${selectedOrderIds.has(o.id) ? 'checked' : ''} onclick="toggleOrderSelection(${o.id}, this.checked)" class="rounded border-slate-700 bg-slate-900 text-blue-600 focus:ring-0"></td>
-          <td class="py-3 px-4 font-mono text-blue-400">#ORD-${o.id}</td>
-          <td class="py-3 px-4"><p class="font-semibold text-white">${esc(o.customer)}</p><p class="text-[11px] text-slate-500">${esc(o.email)}</p></td>
-          <td class="py-3 px-4 text-slate-400 hidden md:table-cell">${esc(o.product)} × ${o.qty}</td>
-          <td class="py-3 px-4 text-slate-400">${o.date}</td>
-          <td class="py-3 px-4">${badge(o.status)}</td>
-          <td class="py-3 px-4 text-right font-semibold text-white">${money(orderTotal(o))}</td>
-          <td class="py-3 px-4 text-center"><button onclick="openOrderDetail(${o.id})" class="rounded border border-slate-800 px-2.5 py-1 text-[11px] font-semibold text-slate-300 hover:bg-slate-800 hover:text-white">View</button></td>
+        <tr class="border-b border-slate-800/60 hover:bg-slate-900/40 transition ${rowBg(o.status)}" data-id="${o.id}">
+
+          <!-- Checkbox -->
+          <td class="p-3 text-center align-top pt-4">
+            <input type="checkbox" ${selectedOrderIds.has(o.id) ? 'checked' : ''} onclick="toggleOrderSelection(${o.id}, this.checked)" class="rounded border-slate-700 bg-slate-900 text-blue-600 focus:ring-0">
+          </td>
+
+          <!-- Customer Info -->
+          <td class="py-3 px-4 align-top">
+            <p class="font-bold text-white text-sm leading-tight">${esc(o.customer)}</p>
+            <p class="text-slate-400 mt-0.5 text-[11px]">${esc(o.phone || '')}</p>
+            <p class="text-slate-500 text-[11px]">${esc(o.email)}</p>
+            <p class="text-slate-500 text-[11px]">IP: ${esc(o.ip || '')}</p>
+            <p class="text-slate-500 text-[11px] mb-2">CN: <span class="text-blue-400">${esc(o.cn || '')}</span></p>
+            <div class="flex items-center gap-1.5 mt-1 flex-wrap">
+              <button onclick="openOrderDetail(${o.id})" title="View" class="rounded p-1 border border-slate-700 bg-slate-800 text-sky-400 hover:bg-slate-700 transition">
+                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0zm-3-9C7.477 3 3 7.477 3 12s4.477 9 9 9 9-4.477 9-9S16.523 3 12 3z"/></svg>
+              </button>
+              <button onclick="showToast('Edit order coming soon','info')" title="Edit" class="rounded p-1 border border-slate-700 bg-slate-800 text-emerald-400 hover:bg-slate-700 transition">
+                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+              </button>
+              <button onclick="showToast('Invoice downloaded','success')" title="Invoice" class="rounded p-1 border border-slate-700 bg-slate-800 text-amber-400 hover:bg-slate-700 transition">
+                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+              </button>
+              <button onclick="deleteOrderPrompt(${o.id})" title="Delete" class="rounded p-1 border border-slate-700 bg-slate-800 text-rose-400 hover:bg-slate-700 transition">
+                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+              </button>
+              <button onclick="showToast('More options coming soon','info')" title="More" class="rounded p-1 border border-slate-700 bg-slate-800 text-slate-400 hover:bg-slate-700 transition">
+                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h.01M12 12h.01M19 12h.01"/></svg>
+              </button>
+            </div>
+          </td>
+
+          <!-- Product Price & Name -->
+          <td class="py-3 px-4 align-top">
+            <p class="font-bold text-white text-sm">৳${(o.price * o.qty).toFixed(2)}</p>
+            <p class="text-slate-300 text-xs mt-0.5 leading-snug">${esc(o.product)}</p>
+            <span class="mt-2 inline-block rounded-full bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-400">Quantity: ${o.qty}</span>
+          </td>
+
+          <!-- Status -->
+          <td class="py-3 px-4 align-top">
+            <div class="inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-semibold cursor-pointer
+              ${o.status==='Paid'||o.status==='Shipped' ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-400' :
+                o.status==='Pending' ? 'border-amber-500/40 bg-amber-500/10 text-amber-400' :
+                o.status==='Cancelled' ? 'border-rose-500/40 bg-rose-500/10 text-rose-400' :
+                'border-blue-500/40 bg-blue-500/10 text-blue-400'}"
+              onclick="openOrderDetail(${o.id})">
+              ${o.status}
+              <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </div>
+            <div class="mt-2 flex items-center gap-1.5 text-[11px] text-slate-400">
+              <svg class="h-3.5 w-3.5 text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              Order Created
+            </div>
+            <p class="text-[10px] text-slate-500 mt-0.5">Updated 19 minutes ago</p>
+            <div class="mt-2 flex items-center gap-1.5 text-[11px] text-slate-400">
+              <svg class="h-3.5 w-3.5 text-slate-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+              ${esc(o.shipping || 'SteadFast')}
+            </div>
+            <div class="mt-2 flex items-center gap-1.5 text-[11px] text-slate-500">
+              <div class="h-5 w-5 rounded-full bg-blue-600 flex items-center justify-center text-[9px] font-bold text-white shrink-0">${(o.assignedTo||'A')[0].toUpperCase()}</div>
+              <span>${esc(o.assignedTo || '')}</span>
+            </div>
+            <p class="text-[10px] text-slate-600 mt-0.5">Assigned To</p>
+          </td>
+
+          <!-- Fraud Check -->
+          <td class="py-3 px-4 align-top">
+            <button onclick="showToast('Fraud analysis coming soon','info')" class="inline-flex items-center gap-1 rounded-md border px-2.5 py-1 text-[11px] font-bold transition hover:opacity-80 ${fraudColor(o.fraudScore||0)}">
+              ${o.fraudScore||0}% Success
+              <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+          </td>
+
+          <!-- Order & Note -->
+          <td class="py-3 px-4 align-top">
+            <p class="text-[11px] text-slate-300 font-mono leading-snug">${esc(o.date)}</p>
+            <div class="mt-2">
+              ${o.note
+                ? `<p class="text-[11px] text-amber-300 bg-amber-500/10 border border-amber-500/20 rounded px-2 py-1">${esc(o.note)}</p>`
+                : `<button onclick="openAddNote(${o.id})" class="text-[11px] text-slate-500 hover:text-blue-400 border border-dashed border-slate-700 rounded px-2 py-1 transition">+ Add Note</button>`
+              }
+            </div>
+          </td>
+
         </tr>`).join('')
-        : `<tr><td colspan="8" class="p-8 text-center text-slate-500">No orders match your filters.</td></tr>`;
+        : `<tr><td colspan="6" class="p-8 text-center text-slate-500">No orders match your filters.</td></tr>`;
       $('selectAllOrders').checked = list.length > 0 && list.every((o) => selectedOrderIds.has(o.id));
       updateBulkShipButton();
       $('navOrdersBadge').textContent = orders.length;
@@ -1733,6 +1826,44 @@
       btn.classList.toggle('hidden', selectedOrderIds.size === 0);
       btn.classList.toggle('flex', selectedOrderIds.size > 0);
       btn.textContent = `Mark ${selectedOrderIds.size} Selected Shipped`;
+    }
+
+    function deleteOrderPrompt(id) {
+      if (!confirm('Delete this order? This cannot be undone.')) return;
+      orders = orders.filter((o) => o.id !== id);
+      saveState();
+      renderOrdersTable();
+      renderRecentOrders();
+      showToast('Order deleted', 'success');
+    }
+
+    function openAddNote(id) {
+      const note = prompt('Add a note to this order:');
+      if (note === null) return;
+      const o = orders.find((x) => x.id === id);
+      if (o) { o.note = note.trim(); saveState(); renderOrdersTable(); }
+    }
+
+    function copyOrdersToClipboard() {
+      const lines = getFilteredOrders().map((o) => [o.id, o.customer, o.phone||'', o.product, o.qty, o.price*o.qty, o.status, o.date].join('\t'));
+      navigator.clipboard.writeText(['ID\tCustomer\tPhone\tProduct\tQty\tTotal\tStatus\tDate', ...lines].join('\n'))
+        .then(() => showToast('Orders copied to clipboard', 'success'))
+        .catch(() => showToast('Copy failed', 'error'));
+    }
+
+    function exportOrdersCSV() {
+      const rows = [['ID','Customer','Phone','Email','IP','CN','Product','Qty','Price','Total','Status','Fraud%','Shipping','Date','Note']];
+      getFilteredOrders().forEach((o) => rows.push([o.id, o.customer, o.phone||'', o.email, o.ip||'', o.cn||'', o.product, o.qty, o.price, (o.price*o.qty).toFixed(2), o.status, o.fraudScore||0, o.shipping||'', o.date, o.note||'']));
+      const csv = rows.map((r) => r.map((c) => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+      const a = document.createElement('a');
+      a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+      a.download = 'orders.csv'; a.click();
+      showToast('CSV exported', 'success');
+    }
+
+    function exportOrdersExcel() {
+      exportOrdersCSV();
+      showToast('Excel (CSV) exported — open in Excel', 'success');
     }
 
     function triggerBulkShip() {
